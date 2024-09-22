@@ -4,6 +4,7 @@ from typing import Optional
 
 import pandas as pd
 from model import ModelUpdate, Prediction
+from nautilus_trader.adapters.betfair.common import OrderSideParser
 from nautilus_trader.common.enums import LogColor
 from nautilus_trader.config import StrategyConfig
 from nautilus_trader.core.data import Data

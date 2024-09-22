@@ -14,7 +14,6 @@ from nautilus_trader.config import (
     RiskEngineConfig,
     StreamingConfig,
 )
-from nautilus_trader.model.data import Bar
 from nautilus_trader.model.identifiers import InstrumentId
 from nautilus_trader.persistence.catalog import ParquetDataCatalog as DataCatalog
 
@@ -80,7 +79,7 @@ def main(
 
     data = [
         BacktestDataConfig(
-            data_cls=Bar.fully_qualified_name(),
+            data_cls="nautilus_trader.model.data:Bar",
             catalog_path=str(catalog.path),
             catalog_fs_protocol=catalog.fs_protocol,
             catalog_fs_storage_options=catalog.fs_storage_options,
