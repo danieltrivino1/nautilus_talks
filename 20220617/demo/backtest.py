@@ -2,18 +2,20 @@ import pathlib
 from typing import Tuple
 
 from nautilus_trader.backtest.node import BacktestNode
+from nautilus_trader.common.config import LoggingConfig
 from nautilus_trader.config import (
-    CacheConfig,
     BacktestDataConfig,
     BacktestEngineConfig,
     BacktestRunConfig,
     BacktestVenueConfig,
+    CacheConfig,
     ImportableActorConfig,
     ImportableStrategyConfig,
     RiskEngineConfig,
     StreamingConfig,
 )
-from nautilus_trader.model.data.bar import Bar
+from nautilus_trader.model.data import Bar
+from nautilus_trader.model.identifiers import InstrumentId
 from nautilus_trader.persistence.catalog import ParquetDataCatalog as DataCatalog
 
 
@@ -57,8 +59,10 @@ def main(
     engine = BacktestEngineConfig(
         trader_id="BACKTESTER-001",
         cache=CacheConfig(tick_capacity=100_000),
-        bypass_logging=bypass_logging,
-        log_level=log_level,
+        logging=LoggingConfig(
+            log_level=log_level,
+            bypass_logging=bypass_logging,
+        ),
         streaming=StreamingConfig(catalog_path=str(catalog.path)) if persistence else None,
         risk_engine=RiskEngineConfig(max_order_submit_rate="1000/00:00:01"),  # type: ignore
         strategies=[strategy],
@@ -80,7 +84,7 @@ def main(
             catalog_path=str(catalog.path),
             catalog_fs_protocol=catalog.fs_protocol,
             catalog_fs_storage_options=catalog.fs_storage_options,
-            instrument_id=instrument_id,
+            instrument_id=InstrumentId.from_str(instrument_id),
             start_time=start_time,
             end_time=end_time,
         )
@@ -95,7 +99,7 @@ def main(
 if __name__ == "__main__":
     # typer.run(main)
     catalog = CATALOG
-    assert not catalog.instruments().empty, "Couldn't load instruments, have you run `poetry run inv extract-catalog`?"
+    assert not catalog.instruments(), "Couldn't load instruments, have you run `poetry run inv extract-catalog`?"
     [result] = main(
         catalog=catalog,
         instrument_ids=("SMH.NASDAQ", "SOXX.NASDAQ"),

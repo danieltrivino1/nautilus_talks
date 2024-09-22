@@ -34,6 +34,7 @@ class PairTraderConfig(StrategyConfig):
     bar_spec: str = "10-SECOND-LAST"
     ib_long_short_margin_requirement = (0.25 + 0.17) / 2.0
 
+
 class PairTrader(Strategy):
     def __init__(self, config: PairTraderConfig):
         super().__init__(config=config)
